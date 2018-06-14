@@ -6,14 +6,19 @@ import java.net.Socket;
 
 public class ServidorTarefas {
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, InterruptedException {
 		
 		System.out.println("------- Iniciando Servidor ----");
 		ServerSocket servidor = new ServerSocket(12345);
-		Socket socket =  servidor.accept();
 		
 		
 		
+		while(true) {
+			Socket socket =  servidor.accept();
+			System.out.println("Aceitando novo cliente na porta "+ socket.getPort());
+			
+			Thread.sleep(20000);
+		}
 		
 	}
 
