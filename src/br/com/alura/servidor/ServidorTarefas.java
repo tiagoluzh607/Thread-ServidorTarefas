@@ -15,7 +15,7 @@ public class ServidorTarefas {
 		ServerSocket servidor = new ServerSocket(12345);
 		
 		//Aproveitando Threads em um pool de threads ou seja o sistema utiliza threads já abertas
-		ExecutorService threadPool = Executors.newFixedThreadPool(2);
+		ExecutorService threadPool = Executors.newCachedThreadPool(); // sem limite e conexão ele cresce dinâmicamente e se um thred não é usado por 60 segundos ele fecha o thread 
 		
 		while(true) {
 			Socket socket =  servidor.accept();
