@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ServidorTarefas {
 	
@@ -16,7 +17,7 @@ public class ServidorTarefas {
 	
 	private ExecutorService threadPool;
 	private ServerSocket servidor;
-	private boolean estaRodando;
+	private AtomicBoolean estaRodando; //SEMPRE que uma variavel for acessada por diferentes threds que iram buscar o seu valor, para que ela possa ser efetivamente acessada deve se usar o volatile, porem junto com o volatile é necessario syncronizar o acesso para ter certeza de uma execução de cada vez, e para termor o volatile e o sync juntos utilizamo essa variavel atomica
 	
 	public ServidorTarefas() throws IOException {
 		
@@ -25,13 +26,13 @@ public class ServidorTarefas {
 		
 		//Aproveitando Threads em um pool de threads ou seja o sistema utiliza threads já abertas
 		this.threadPool = Executors.newCachedThreadPool(); // sem limite e conexão ele cresce dinâmicamente e se um thred não é usado por 60 segundos ele fecha o thread 
-		this.estaRodando = true;
+		this.estaRodando.set(true);
 		
 	}
 		
 	public void rodar() throws IOException {
 		
-		while(this.estaRodando) {
+		while(this.estaRodando.get()) {
 			try {
 				Socket socket =  servidor.accept();
 				System.out.println("Aceitando novo cliente na porta "+ socket.getPort());
@@ -48,7 +49,7 @@ public class ServidorTarefas {
 	}
 
 	public void parar() throws IOException {
-		estaRodando = false;
+		estaRodando.set(false);
 		servidor.close();
 		threadPool.shutdown();
 		
