@@ -3,6 +3,7 @@ package br.com.alura.servidor;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -23,7 +24,6 @@ public class ServidorTarefas {
 			
 			DistribuirTarefas distribuirTarefas = new DistribuirTarefas(socket);
 			threadPool.execute(distribuirTarefas);
-			
 			
 		}
 		

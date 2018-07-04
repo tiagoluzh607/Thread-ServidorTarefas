@@ -14,12 +14,26 @@ public class Tarefas {
 		Socket socket = new Socket("localhost", 12345);
 		System.out.println("conexao estabelecida");
 		
-		PrintStream saida = new PrintStream(socket.getOutputStream());
-		saida.println("c1");
-		
-		
+		PrintStream saida = new PrintStream(socket.getOutputStream());	
 		Scanner teclado = new Scanner(System.in);
-		teclado.nextLine();
+		while(teclado.hasNextLine()) {
+			String linha = teclado.nextLine();
+			
+			if(linha.trim().equals("")){
+				break;
+			}
+			saida.println(linha);
+		}
+		
+		System.out.println("Recebendo dados do servidor");
+		
+		Scanner respostaServidor = new Scanner(socket.getInputStream());
+		while(respostaServidor.hasNextLine()) {
+			String linha = respostaServidor.nextLine();
+			System.out.println(linha);
+		}		
+		
+		respostaServidor.close();
 		
 		saida.close();
 		teclado.close();
