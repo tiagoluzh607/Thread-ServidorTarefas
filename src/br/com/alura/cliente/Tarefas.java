@@ -14,29 +14,66 @@ public class Tarefas {
 		Socket socket = new Socket("localhost", 12345);
 		System.out.println("conexao estabelecida");
 		
-		PrintStream saida = new PrintStream(socket.getOutputStream());	
-		Scanner teclado = new Scanner(System.in);
-		while(teclado.hasNextLine()) {
-			String linha = teclado.nextLine();
+		Thread threadEnviaComando = new Thread(new Runnable() {
 			
-			if(linha.trim().equals("")){
-				break;
+			@Override
+			public void run() {
+				
+				try {
+					
+					System.out.println("Podemos enviar Comandos!");
+					
+					PrintStream saida = new PrintStream(socket.getOutputStream());	
+					Scanner teclado = new Scanner(System.in);
+					while(teclado.hasNextLine()) {
+						String linha = teclado.nextLine();
+						
+						if(linha.trim().equals("")){
+							break;
+						}
+						saida.println(linha);
+					}
+					
+					saida.close();
+					teclado.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					throw new RuntimeException();
+				}
+				
 			}
-			saida.println(linha);
-		}
+		});
 		
-		System.out.println("Recebendo dados do servidor");
+		Thread threadRecebeResposta = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				
+				try {
+					System.out.println("Recebendo dados do servidor");
+					
+					Scanner respostaServidor = new Scanner(socket.getInputStream());
+					while(respostaServidor.hasNextLine()) {
+						String linha = respostaServidor.nextLine();
+						System.out.println(linha);
+					}		
+					
+					respostaServidor.close();
+					
+				} catch (IOException e) {
+					throw new RuntimeException();
+				}
+				
+			}
+		});
 		
-		Scanner respostaServidor = new Scanner(socket.getInputStream());
-		while(respostaServidor.hasNextLine()) {
-			String linha = respostaServidor.nextLine();
-			System.out.println(linha);
-		}		
+		threadRecebeResposta.start();
+		threadEnviaComando.start();
 		
-		respostaServidor.close();
+		//Comando que diz para Thred main aguardar a conclução da threadenviacomando para prossegir
+		try {threadEnviaComando.join();} catch(InterruptedException e) {throw new RuntimeException();}
 		
-		saida.close();
-		teclado.close();
+		System.out.println("Fechando socket do cliente");
 		socket.close();
 	}
 
