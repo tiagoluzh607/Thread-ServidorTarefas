@@ -25,8 +25,9 @@ public class ServidorTarefas {
 		this.servidor = new ServerSocket(12345);
 		
 		//Aproveitando Threads em um pool de threads ou seja o sistema utiliza threads já abertas
-		this.threadPool = Executors.newCachedThreadPool(); // sem limite e conexão ele cresce dinâmicamente e se um thred não é usado por 60 segundos ele fecha o thread 
-		this.estaRodando.set(true);
+		//this.threadPool = Executors.newCachedThreadPool(); // sem limite e conexão ele cresce dinâmicamente e se um thred não é usado por 60 segundos ele fecha o thread 
+		this.threadPool = Executors.newFixedThreadPool(4);
+		this.estaRodando = new AtomicBoolean(true);
 		
 	}
 		
@@ -37,7 +38,7 @@ public class ServidorTarefas {
 				Socket socket =  servidor.accept();
 				System.out.println("Aceitando novo cliente na porta "+ socket.getPort());
 				
-				DistribuirTarefas distribuirTarefas = new DistribuirTarefas(socket,this);
+				DistribuirTarefas distribuirTarefas = new DistribuirTarefas(threadPool, socket,this); //usar o mesmo thread pool para executar os comandos
 				threadPool.execute(distribuirTarefas);
 			} catch (SocketException e) {
 				// TODO Auto-generated catch block
