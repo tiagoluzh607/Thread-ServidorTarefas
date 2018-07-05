@@ -26,7 +26,7 @@ public class ServidorTarefas {
 		
 		//Aproveitando Threads em um pool de threads ou seja o sistema utiliza threads já abertas
 		//this.threadPool = Executors.newCachedThreadPool(); // sem limite e conexão ele cresce dinâmicamente e se um thred não é usado por 60 segundos ele fecha o thread 
-		this.threadPool = Executors.newFixedThreadPool(4);
+		this.threadPool = Executors.newFixedThreadPool(4, new FabricaDeThreads()); //passando tambem uma fabrica de thread onde podemos definir alguns comportamentos como execoes e nome para os threads
 		this.estaRodando = new AtomicBoolean(true);
 		
 	}

@@ -23,8 +23,8 @@ public class ComandoC2 implements Runnable {
 			// TODO Auto-generated catch block
 			throw new RuntimeException();
 		}
-		
-		saida.println("Comando c2 executado com sucesso!");
+		throw new RuntimeException("Exception no comando c2");
+		//saida.println("Comando c2 executado com sucesso!");
 
 	}
 
